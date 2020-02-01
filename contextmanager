@@ -1,0 +1,23 @@
+from time import time
+from datetime import datetime
+
+class MyContextManager:
+  def __init__(self, file_path, method):
+    self.file_path = file_path
+    self.method = method
+
+  def __enter__(self):
+    global time1
+    time1 = time() # запуск таймера времени работы кода
+    self.file = open(self.file_path)
+    start_time = datetime.now() # время запуска менеджера запуска менеджера контекста
+    print(f'Время запуска кода в менеджере контекста: {start_time} \n')
+    return self.file
+
+  def __exit__(self, exc_type, exc_val, exc_tb):
+    self.file.close()
+    end_time = datetime.now() #фиксируем время завершения менеджера контекста
+    print(f'\nВремя завершения работы кода в менеджере контекста: {end_time}')
+    time2 = time() # останавливаем таймер по времени работы кода
+    execution_time = time2 - time1 #вычисляем время работы кода
+    print(f'\nПотрачено времени на выполнение кода: {execution_time} cекунд')
