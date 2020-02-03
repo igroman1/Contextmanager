@@ -1,45 +1,44 @@
 from time import time
 from datetime import datetime
-
 class MyContextManager:
-  def __init__(self, file_path, method):
-    self.file_path = file_path
-    self.method = method
+    def __init__(self, file_path, method):
+        self.file_path = file_path
+        self.method = method
+        self.time1 = time
+        self.time2 = time
 
-  def __enter__(self):
-    global time1
-    time1 = time() # запуск таймера времени работы кода
-    self.file = open(self.file_path)
-    start_time = datetime.now() # время запуска менеджера запуска менеджера контекста
-    print(f'Время запуска кода в менеджере контекста: {start_time} \n')
-    return self.file
-
-  def __exit__(self, exc_type, exc_val, exc_tb):
-    self.file.close()
-    end_time = datetime.now() #фиксируем время завершения менеджера контекста
-    print(f'\nВремя завершения работы кода в менеджере контекста: {end_time}')
-    time2 = time() # останавливаем таймер по времени работы кода
-    execution_time = time2 - time1 #вычисляем время работы кода
-    print(f'\nПотрачено времени на выполнение кода: {execution_time} cекунд')
-
+    def __enter__(self, ):
+        self.time1 = time()  # запуск таймера времени работы кода
+        self.file = open(self.file_path)
+        start_time = datetime.now()  # время запуска менеджера запуска менеджера контекста
+        print(f'Время запуска кода в менеджере контекста: {start_time} \n')
+        return self.file
+    def __exit__(self, exc_type, exc_val, exc_tb):
+        self.file.close()
+        end_time = datetime.now()  # фиксируем время завершения менеджера контекста
+        print(f'\nВремя завершения работы кода в менеджере контекста: {end_time}')
+        # time2 = time()
+        self.time2 = time()  # останавливаем таймер по времени работы кода
+        execution_time = self.time2 - self.time1  # вычисляем время работы кода
+        print(f'\nПотрачено времени на выполнение кода: {execution_time} cекунд')
 
 def get_dish():
-   
-  dish = file.readline().strip()
-  cook_book[dish] = []
-  amount_ingridient = (file.readline())
-  for _ in range(int(amount_ingridient)):
-    ingridient_list = file.readline().strip().split(' | ')
-    cook_book[dish].append({'ingridient_name': ingridient_list[0], 'quantity': ingridient_list[1], 'measure': ingridient_list[2]})
-  return file.readline()
+    dish = file.readline().strip()
+    cook_book[dish] = []
+    amount_ingridient = (file.readline())
+    for _ in range(int(amount_ingridient)):
+        ingridient_list = file.readline().strip().split(' | ')
+        cook_book[dish].append(
+            {'ingridient_name': ingridient_list[0], 'quantity': ingridient_list[1], 'measure': ingridient_list[2]})
+    return file.readline()
 
 cook_book = {}
 
 with MyContextManager('recipes.txt', 'r') as file:
-  try:
-    result = get_dish()
-  except Exception:
-    result = ''
-  while len(result) != 0:
-    result = get_dish()
-  print(cook_book)
+    try:
+        result = get_dish()
+    except Exception:
+        result = ''
+    while len(result) != 0:
+        result = get_dish()
+    print(cook_book)
